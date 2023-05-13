@@ -9,7 +9,7 @@ class MathEnglish:
     def English_enrolled(self):
         english_course = None
         math_course = None
-        math_courses = ['Math-112', 'Math-110A', 'Math-116']
+        math_courses = ['MATH-104', 'MATH-110A','MATH-112','MATH-112S', 'MATH-114', 'MATH-116', 'MATH-140']
         student_df = self.df[df['Student ID'] == id]
         student_df = student_df.reset_index()
         for i in range(len(student_df)):
@@ -55,24 +55,27 @@ class MathEnglish:
 
 class ReportGenerator:
 
-    def __init__(self, id, lcp, english_course, math_course):
-        id = self.id
-        lcp = self.lcp
-        english_course = self.english_course
-        math_course = self.math_course
+    def __init__(self, id, lcp, ed_plan, english_course, math_course, dataframe):
+        self.id = id
+        self.lcp = lcp
+        self.ed_plan = ed_plan
+        self.english_course = english_course
+        self.math_course = math_course
+        self.lcp_df = dataframe
 
     def english_math_dataframe(self):
-        headers = ['Student ID', 'LCP', 'English', 'Math']
-        lcp_df = pd.DataFrame(columns='headers')
+
         length = len(lcp_df)
-        lcp_df.loc[length, 'Student ID'] = self.student_id
-        lcp_df.loc[length, 'LCP'] = self.lcp
-        lcp_df.loc[length, 'English'] = self.english_course
-        lcp_df.loc[length, 'Math'] = self.math_course
+        self.lcp_df.loc[length, 'Student ID'] = self.id
+        self.lcp_df.loc[length, 'LCP'] = self.lcp
+        self.lcp_df.loc[length, 'Ed Plan'] = self.ed_plan
+        self.lcp_df.loc[length, 'English'] = self.english_course
+        self.lcp_df.loc[length, 'Math'] = self.math_course
+        return lcp_df
 
 
-
-
+columns = ['Student ID', 'LCP', 'Ed Plan','English', 'Math']
+lcp_df = pd.DataFrame(columns=columns)
 df = pd.read_csv('C:/Users/fmixson/Desktop/Dashboard_files/LCP_English_Math/campus-v2report-enrollment-2023-05-11 (1).csv')
 pd.set_option('display.max_columns', None)
 df = df[df['Dropped'] == 'No'].reset_index()
@@ -85,10 +88,11 @@ for id in id_list:
     student = MathEnglish(id=id, df=df)
     ed_plan, lcp = student.lcp()
     engl_course, math_course, id = student.English_enrolled()
-    print(id)
-    report = ReportGenerator(id=id, lcp=lcp, english_course=engl_course, math_course=math_course)
-    report.english_math_dataframe()
-
+    print('English:', engl_course, 'Math:', math_course, id)
+    report = ReportGenerator(id=id, lcp=lcp, ed_plan=ed_plan,english_course=engl_course, math_course=math_course, dataframe = lcp_df)
+    lcp_df = report.english_math_dataframe()
+    print(lcp_df)
+lcp_df.to_excel('EM_df.xlsx')
 # df[['First', 'Second', 'Third']] = df.Dropped.str.split(',', expand=True)
 # print(df)
 
