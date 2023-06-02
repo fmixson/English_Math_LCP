@@ -81,9 +81,10 @@ class ReportGenerator:
 columns = ['Student ID', 'LCP', 'Ed Plan', 'English', 'Math']
 lcp_df = pd.DataFrame(columns=columns)
 df = pd.read_csv(
-    'C:/Users/fmixson/Desktop/Dashboard_files/LCP_English_Math/campus-v2report-enrollment-2023-05-11 (1).csv')
+    'C:/Users/fmixson/Desktop/Dashboard_files/LCP_English_Math/campus-v2report-enrollment-2023-05-23(3).csv')
+
 pd.set_option('display.max_columns', None)
-df = df[df['Dropped'] == 'No'].reset_index()
+df = df[df['Dropped?'] == 'No'].reset_index()
 id_list = []
 for i in range(len(df)):
     if df.loc[i, 'Student ID'] not in id_list:
